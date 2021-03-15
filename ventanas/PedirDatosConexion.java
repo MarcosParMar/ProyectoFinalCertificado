@@ -28,7 +28,6 @@ public class PedirDatosConexion {
         ventana.pack();
         ventana.setLocationRelativeTo(null);
 
-
         salirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -47,12 +46,19 @@ public class PedirDatosConexion {
         aceptarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 new Conexion(componerURL());
+                new Conexion(componerURL());
+                if (Conexion.getIsConneted()) {
+                    new PedirBasesDatos();
+                    ventana.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error durante la Conexión.\n" +
+                            "Por favor, compruebe los datos e inténtelo de nuevo.", "Problema de Conexión", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
 
-    private String componerURL(){
+    private String componerURL() {
         String servidor = servidorTextField.getText();
         String puerto = puertoTextField.getText();
         String user = usuarioTextField.getText();
