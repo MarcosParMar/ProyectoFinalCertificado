@@ -34,7 +34,10 @@ public class PedirBasesDatos {
         seleccionarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Conexion.setDatabase(baseDatosComboBox.getSelectedItem().toString());
                 new Conexion(Conexion.getUrl() + "database=" + baseDatosComboBox.getSelectedItem() + ";");
+                new VentanaPrincipal();
+                ventana.dispose();
             }
         });
     }

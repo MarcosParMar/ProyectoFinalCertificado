@@ -1,69 +1,62 @@
 package ventanas;
 
+import principal.Conexion;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class VentanaPrincipal extends JFrame {
 
-    private JMenuBar barraMenu;
-    private JMenu menu;
-    private JMenuItem opcionUnoMenuItem;
-    private JMenuItem opcionDosMenuItem;
-    private JMenuItem opcionTresMenuItem;
-    private JMenuItem opcionSalirMenuItem;
+    private JPanel panel;
+    private JLabel conexionLabel;
+    private JButton importarDatosButton;
+    private JButton ejecutarConsultaButton;
+    private JButton exportarConsultaButton;
 
-    public VentanaPrincipal(){
+    public VentanaPrincipal() {
+
         super();
-        setLayout(null);
-
-        barraMenu = new JMenuBar();
-        setJMenuBar(barraMenu);
-
-        menu = new JMenu("Opciones");
-        barraMenu.add(menu);
-
-        opcionUnoMenuItem = new JMenuItem("Importar Datos de un Archivo");
-        opcionDosMenuItem = new JMenuItem("Ejecutar una consulta sobre una Base de Datos");
-        opcionTresMenuItem = new JMenuItem("Ejecutar una consulta y guardarla en un Archivo");
-        opcionSalirMenuItem = new JMenuItem("Salir");
-
-        menu.add(opcionUnoMenuItem);
-        menu.add(opcionDosMenuItem);
-        menu.add(opcionTresMenuItem);
-        menu.add(opcionSalirMenuItem);
-
-
-        opcionUnoMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new PedirDatosConexion();
-            }
-        });
-
-        opcionDosMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
-        opcionTresMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
-        opcionSalirMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-
+        setContentPane(panel);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
+
+        conexionLabel.setText("Conexión seralizada con el servidor " + Conexion.getServidor() + " y la base de datos " + Conexion.getDatabase());
+
+        importarDatosButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navegarArchivos();
+            }
+        });
+        ejecutarConsultaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        exportarConsultaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+    }
+
+    private void navegarArchivos() {
+        JFileChooser selectorArchivos = new JFileChooser();
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter(null, "xlsx", "xls");
+        selectorArchivos.setFileFilter(filtro);
+        selectorArchivos.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int seleccion = selectorArchivos.showOpenDialog(this);
+        File archivo = selectorArchivos.getSelectedFile();
+        if ((archivo == null) || (archivo.getName().equals(""))) {
+            JOptionPane.showMessageDialog(null, "Nombre del archivo inválido", "Nombre del archivo inválido", JOptionPane.ERROR_MESSAGE);
+        } else {
+            new VistaPrevia(archivo.getAbsolutePath());
+        }
     }
 }

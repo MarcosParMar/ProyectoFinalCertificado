@@ -11,6 +11,8 @@ public class Conexion {
     private static String url;
     private static Connection connection;
     private static boolean isConnected;
+    private static String servidor;
+    private static String database;
 
     public Conexion(String url) {
         try {
@@ -35,5 +37,21 @@ public class Conexion {
 
     public static boolean getIsConneted(){
         return isConnected;
+    }
+
+    public static String getServidor() {
+        return servidor;
+    }
+
+    public static void setServidor(String servidor) {
+        Conexion.servidor = servidor;
+    }
+
+    public static String getDatabase() {
+        return database;
+    }
+
+    public static void setDatabase(String database) {
+        Conexion.database = database;
     }
 }

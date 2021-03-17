@@ -49,6 +49,7 @@ public class PedirDatosConexion {
                 new Conexion(componerURL());
                 if (Conexion.getIsConneted()) {
                     new PedirBasesDatos();
+                    Conexion.setServidor(servidorTextField.getText());
                     ventana.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Ha ocurrido un error durante la Conexión.\n" +
