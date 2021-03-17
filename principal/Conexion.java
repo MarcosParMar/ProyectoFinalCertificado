@@ -1,10 +1,8 @@
 package principal;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class Conexion {
 
@@ -13,6 +11,7 @@ public class Conexion {
     private static boolean isConnected;
     private static String servidor;
     private static String database;
+    private static String tabla;
 
     public Conexion(String url) {
         try {
@@ -53,5 +52,13 @@ public class Conexion {
 
     public static void setDatabase(String database) {
         Conexion.database = database;
+    }
+
+    public static String getTabla() {
+        return tabla;
+    }
+
+    public static void setTabla(String tabla) {
+        Conexion.tabla = tabla;
     }
 }

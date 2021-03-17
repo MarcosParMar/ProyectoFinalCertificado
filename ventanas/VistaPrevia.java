@@ -1,12 +1,16 @@
 package ventanas;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.Iterator;
+import java.util.Vector;
 
 public class VistaPrevia {
     private JPanel panel;
@@ -19,13 +23,13 @@ public class VistaPrevia {
 
     public VistaPrevia(String ruta) {
 
-        VentanaEmergente ventana = new VentanaEmergente("Vista Previa");
+        archivo = new File(ruta);
+        rellenarTabla();
+
+        VentanaEmergente ventana = new VentanaEmergente("Vista Previa de " + archivo.getName());
         ventana.setContentPane(panel);
         ventana.pack();
         ventana.setLocationRelativeTo(null);
-
-        archivo = new File(ruta);
-        rellenarTabla();
 
         cancelarButton.addActionListener(new ActionListener() {
             @Override
@@ -36,36 +40,50 @@ public class VistaPrevia {
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                new PedirTabla();
             }
         });
     }
 
     private void rellenarTabla() {
 
+        DefaultTableModel modelo = new DefaultTableModel();
+
         try {
-            int iRow = 0;
-            InputStream input = new FileInputStream(archivo);
-            Workbook workbook = WorkbookFactory.create(input);
-            Sheet sheet = workbook.getSheetAt(0);
-            Row row = sheet.createRow(iRow);
 
+            FileInputStream fileInputStream = new FileInputStream(archivo);
+            XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rowIterator = sheet.iterator();
 
-            while (row != null) {
-                Cell cell = row.createCell(0);
-                String value = cell.getStringCellValue();
+            while (rowIterator.hasNext()) {
 
-                //inserta lo que quieres hacer
+                Vector<Object> fila = new Vector<>();
+                Row row = rowIterator.next();
+                Iterator<Cell> cellIterator = row.cellIterator();
 
-
-                //
-
-                iRow++;
-                row = sheet.getRow(iRow);
+                while (cellIterator.hasNext()) {
+                    Cell cell = cellIterator.next();
+                    if (row.getRowNum() == 0) {
+                        modelo.addColumn(cell.getStringCellValue());
+                    } else {
+                        String tipoDeDato = cell.getCellType().toString();
+                        switch (tipoDeDato) {
+                            case "STRING":
+                                fila.addElement(cell.getStringCellValue());
+                                break;
+                            case "NUMERIC":
+                                fila.addElement(cell.getNumericCellValue());
+                                break;
+                        }
+                        System.out.println(cell.getCellType().getClass() + "--" + cell.getCellType().toString());
+                    }
+                }
+                if (row.getRowNum() != 0) modelo.addRow(fila);
             }
 
+            table.setModel(modelo);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
