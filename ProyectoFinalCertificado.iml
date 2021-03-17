@@ -8,5 +8,17 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="adaptive" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/Librerias/poi-5.0.0" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="file://$MODULE_DIR$/Librerias/poi-5.0.0/docs/apidocs/dev" />
+        </JAVADOC>
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/Librerias/poi-5.0.0" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>
