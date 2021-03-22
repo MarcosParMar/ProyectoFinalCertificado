@@ -40,7 +40,7 @@ public class VistaPrevia {
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new PedirTabla();
+                new PedirTabla(archivo);
             }
         });
     }
@@ -68,6 +68,7 @@ public class VistaPrevia {
                         modelo.addColumn(cell.getStringCellValue());
                     } else {
                         String tipoDeDato = cell.getCellType().toString();
+
                         switch (tipoDeDato) {
                             case "STRING":
                                 fila.addElement(cell.getStringCellValue());
@@ -76,7 +77,6 @@ public class VistaPrevia {
                                 fila.addElement(cell.getNumericCellValue());
                                 break;
                         }
-                        System.out.println(cell.getCellType().getClass() + "--" + cell.getCellType().toString());
                     }
                 }
                 if (row.getRowNum() != 0) modelo.addRow(fila);

@@ -1,10 +1,12 @@
 package ventanas;
 
 import principal.Conexion;
+import principal.OperacionesBaseDatos;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,7 +17,7 @@ public class PedirTabla {
     private JButton seleccionarButton;
     private JButton cancelarButton;
 
-    public PedirTabla() {
+    public PedirTabla(File archivo) {
 
         rellenarLista();
 
@@ -37,7 +39,7 @@ public class PedirTabla {
                 Conexion.setTabla(tablasList.getSelectedValue().toString());
                 JOptionPane.showConfirmDialog(null, "Se guardarán los datos en la tabla '" + Conexion.getTabla() + "' de la base de datos '" + Conexion.getDatabase() + "'. \n" +
                         "¿Está Seguro?", null, JOptionPane.CANCEL_OPTION);
-                guardarEnBaseDeDatos();
+                OperacionesBaseDatos.grabarDatos(archivo);
                 ventana.dispose();
             }
         });
@@ -60,7 +62,4 @@ public class PedirTabla {
         }
     }
 
-    private void guardarEnBaseDeDatos(){
-
-    }
 }
