@@ -7,10 +7,13 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
@@ -56,20 +59,23 @@ public class OperacionesBaseDatos {
                 }
                 if (row.getRowNum() != 0) {
                     statement.executeUpdate("INSERT INTO " + Conexion.getTabla() + " " + imprimirCabecera(cabeceras) + " VALUES " + imprimirFila(fila));
-                    JOptionPane.showMessageDialog(null, "Se han guardado los datos con éxito");
                 }
             }
+
+            JOptionPane.showMessageDialog(null, "Se han guardado los datos con éxito");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error", null, JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
 
     public static String imprimirFila(Vector vector) {
+
         String vectorImpreso = new String();
         int posicion = 1;
         for (Object o : vector) {
@@ -108,6 +114,7 @@ public class OperacionesBaseDatos {
     }
 
     public static String imprimirCabecera(Vector vector) {
+
         String vectorImpreso = new String();
         int posicion = 1;
         for (Object o : vector) {
@@ -121,5 +128,38 @@ public class OperacionesBaseDatos {
             posicion++;
         }
         return vectorImpreso;
+    }
+
+    public static DefaultTableModel ejecutarConsulta(String consulta) {
+
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        try {
+
+            Statement statement = Conexion.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("USE " + Conexion.getDatabase() + "; " + consulta + ";");
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+
+            for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                modelo.addColumn(resultSetMetaData.getColumnName(i));
+            }
+
+            while (resultSet.next()) {
+
+                Vector<Object> fila = new Vector<>();
+
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                    fila.addElement(resultSet.getString(i));
+                }
+
+                modelo.addRow(fila);
+
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error durante la consulta", null, JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        return modelo;
     }
 }

@@ -41,6 +41,7 @@ public class VistaPrevia {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new PedirTabla(archivo);
+                ventana.dispose();
             }
         });
     }
