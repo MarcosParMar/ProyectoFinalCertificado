@@ -1,16 +1,17 @@
 package principal;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.Iterator;
 import java.util.Vector;
@@ -36,7 +37,7 @@ public class OperacionesBaseDatos {
         OperacionesBaseDatos.timepoEjecucion = timepoEjecucion;
     }
 
-    public static void grabarDatos(File archivo) {
+    public static void grabarDatosEnBaseDeDatos(File archivo) {
 
         try {
 
@@ -185,7 +186,7 @@ public class OperacionesBaseDatos {
         try {
             Statement statement = Conexion.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("USE " + Conexion.getDatabase() + "; SELECT GETDATE();");
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 setHoraServidor(resultSet.getTimestamp(1));
             }
         } catch (SQLException e) {
@@ -193,5 +194,55 @@ public class OperacionesBaseDatos {
         }
 
         return modelo;
+    }
+
+    public static void grabarConsultaEnExcel(File archivo, String consulta) {
+
+        try {
+
+            Statement statement = Conexion.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("USE " + Conexion.getDatabase() + "; " + consulta + ";");
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+
+
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet();
+            workbook.setSheetName(0, Conexion.getDatabase());
+
+            XSSFRow row = sheet.createRow(0);
+
+            for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                XSSFCell cell = row.createCell(i - 1);
+                cell.setCellValue(resultSetMetaData.getColumnName(i));
+            }
+
+            while (resultSet.next()) {
+
+                row = sheet.createRow(resultSet.getRow());
+
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                    Cell cell = row.createCell(i - 1);
+                    cell.setCellValue(resultSet.getString(i));
+                }
+            }
+
+            try(FileOutputStream fileOutputStream = new FileOutputStream(archivo)){
+                if(archivo.exists()){
+                    archivo.delete();
+                }
+
+                workbook.write(fileOutputStream);
+                fileOutputStream.flush();
+                JOptionPane.showMessageDialog(null,"Los datos se han guardado con éxito!");
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al guardar los datos", null, JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 }

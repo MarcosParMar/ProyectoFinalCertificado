@@ -35,13 +35,13 @@ public class VentanaPrincipal extends JFrame {
         ejecutarConsultaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new VistaConsultas();
+                new VistaConsultas(false);
             }
         });
         exportarConsultaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                new VistaConsultas(true);
             }
         });
     }

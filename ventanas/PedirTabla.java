@@ -39,7 +39,7 @@ public class PedirTabla {
                 Conexion.setTabla(tablasList.getSelectedValue().toString());
                 JOptionPane.showConfirmDialog(null, "Se guardarán los datos en la tabla '" + Conexion.getTabla() + "' de la base de datos '" + Conexion.getDatabase() + "'. \n" +
                         "¿Está Seguro?", null, JOptionPane.CANCEL_OPTION);
-                OperacionesBaseDatos.grabarDatos(archivo);
+                OperacionesBaseDatos.grabarDatosEnBaseDeDatos(archivo);
                 ventana.dispose();
             }
         });
