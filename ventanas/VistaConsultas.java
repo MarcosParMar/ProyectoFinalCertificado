@@ -6,6 +6,8 @@ import principal.OperacionesBaseDatos;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class VistaConsultas {
     private JPanel panel;
@@ -15,7 +17,8 @@ public class VistaConsultas {
     private JScrollPane scrollPaneUno;
     private JButton ejecutarButton;
     private JButton salirButton;
-    private JLabel datosRespuestaLablel;
+    private JLabel tiempoRespuestaLablel;
+    private JLabel horaServidorLabel;
 
     public VistaConsultas() {
 
@@ -34,7 +37,8 @@ public class VistaConsultas {
             @Override
             public void actionPerformed(ActionEvent e) {
                 table.setModel(OperacionesBaseDatos.ejecutarConsulta(consultasArea.getText()));
-                datosRespuestaLablel.setText("");
+                tiempoRespuestaLablel.setText(String.valueOf("Tiempo de ejecución de la consulta: " + OperacionesBaseDatos.getTimepoEjecucion() + " milisegundos"));
+                horaServidorLabel.setText(OperacionesBaseDatos.getHoraServidor().toString());
             }
         });
     }

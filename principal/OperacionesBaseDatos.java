@@ -1,6 +1,5 @@
 package principal;
 
-import org.apache.commons.collections4.functors.WhileClosure;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -12,14 +11,30 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Iterator;
 import java.util.Vector;
 
 public class OperacionesBaseDatos {
+
+    private static Long timepoEjecucion;
+    private static Timestamp horaServidor;
+
+    public static Timestamp getHoraServidor() {
+        return horaServidor;
+    }
+
+    public static void setHoraServidor(Timestamp horaServidor) {
+        OperacionesBaseDatos.horaServidor = horaServidor;
+    }
+
+    public static Long getTimepoEjecucion() {
+        return timepoEjecucion;
+    }
+
+    public static void setTimepoEjecucion(Long timepoEjecucion) {
+        OperacionesBaseDatos.timepoEjecucion = timepoEjecucion;
+    }
 
     public static void grabarDatos(File archivo) {
 
@@ -132,6 +147,8 @@ public class OperacionesBaseDatos {
 
     public static DefaultTableModel ejecutarConsulta(String consulta) {
 
+        Long horaInicioConsulta = System.currentTimeMillis();
+
         DefaultTableModel modelo = new DefaultTableModel();
 
         try {
@@ -160,6 +177,21 @@ public class OperacionesBaseDatos {
             JOptionPane.showMessageDialog(null, "Ha ocurrido un error durante la consulta", null, JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+
+        Long horaFinConsulta = System.currentTimeMillis();
+
+        setTimepoEjecucion(horaFinConsulta - horaInicioConsulta);
+
+        try {
+            Statement statement = Conexion.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("USE " + Conexion.getDatabase() + "; SELECT GETDATE();");
+            while (resultSet.next()){
+                setHoraServidor(resultSet.getTimestamp(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return modelo;
     }
 }
